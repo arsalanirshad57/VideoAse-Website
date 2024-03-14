@@ -1,4 +1,8 @@
 import type { Config } from "tailwindcss";
+const colors = require("tailwindcss/colors");
+const {
+  default: flattenColorPalette,
+} = require("tailwindcss/lib/util/flattenColorPalette");
 
 const config: Config = {
   content: [
@@ -8,33 +12,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // 1c1f24
       colors: {
-        'bg-color': '#0a0a0a',
+        'bg-color': '#000001',
         'bg-colorTwo': '#18191D',
         'blue': '#018ec4',
-        'text-color': '#a4a7b1',
+        'text-color': '#d4d4d4',
         'white': '#ffffff',
       },
-      fontSize: {
-        '3xl': ['65px', {
-          letterSpacing: '2px',
-          fontWeight: '800',
-        }],
-        '2xl': '51px',
-        // lineHeight: '1.2rem',
-        //   fontWeight: '700',
-        'xl': '48px',
-        // fontWeight: '500',
-        'lg': '17px',
-        // lineHeight: '2.25rem',
-        // letterSpacing: '7px',
-        // fontWeight: '300',
-        'md': "16px",
-        // fontWeight: '300',
-        'sm': '',
-        'span': '13px'
-      },
+
       Width: {
         "container": "1200px",
       },
@@ -48,8 +33,36 @@ const config: Config = {
       fontFamily: {
         poppins: ["Poppins", "sans"],
       },
+      animation: {
+        spotlight: "spotlight 2s ease .75s 1 forwards",
+      },
+      keyframes: {
+        spotlight: {
+          "0%": {
+            opacity: '0',
+            transform: "translate(-72%, -62%) scale(0.5)",
+          },
+          "100%": {
+            opacity: '1',
+            transform: "translate(-50%,-40%) scale(1)",
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    addVariablesForColors,
+
+  ],
 };
+function addVariablesForColors({ addBase, theme }: any) {
+  let allColors = flattenColorPalette(theme("colors"));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+
+  addBase({
+    ":root": newVars,
+  });
+}
 export default config;
